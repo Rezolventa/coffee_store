@@ -1,0 +1,66 @@
+{% extends 'retail/base_retail.html' %}
+
+{% block js %}
+    <script>
+        window.addWeight=function(item_id, number, price) {
+            weight_id = 'weight-' + item_id
+            price_id = 'price-' + item_id
+            weight = parseInt(document.getElementById(weight_id).value)
+            new_weight = weight + number
+            if (new_weight > 0) {
+                document.getElementById(weight_id).value = new_weight
+                document.getElementById(price_id).value = Math.round(new_weight * price / 100) + " р."
+            }
+        }
+
+        window.addToCart=function(item_id) {
+            weight = document.getElementById('weight-' + item_id).value
+            fetch("http://127.0.0.1:8000/retail/addtocart/",
+            {
+                headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json',
+                  'X-CSRFToken': getCookie('csrftoken')
+                },
+                method: "POST",
+                credentials: "same-origin",
+                body: JSON.stringify({item_id, weight})
+            })
+            .then(function(res){ console.log(res) }) //success
+            .catch(function(res){ console.log(res) }) //failure
+        }
+
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+{% endblock %}
+
+{% block title %}
+    Каталог
+{% endblock %}
+
+{% block content %}
+    <!--
+    <form class="" action="{% url 'add_to_cart_url' %}" method="post">
+        {% csrf_token %} -->
+        <h1 class="mb-5">Каталог</h1>
+        <p align="right"><a href="{% url 'item_create_url' %}">add</a></p>
+
+        {% for item in items %}
+            {% include 'retail/includes/item_card_template.html' %}
+            <p></p>
+        {% endfor %}
+    <!-- </form> -->
+{% endblock %}

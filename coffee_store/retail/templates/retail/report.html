@@ -1,0 +1,50 @@
+{% extends 'retail/base_retail.html' %}
+
+{% block title %}
+    Корзина
+{% endblock %}
+
+{% block content %}
+
+    <!--
+    <form class="" action="{% url 'order_edit_url' %}" method="post">
+        {% csrf_token %}
+            {% if form.phone_number.errors %}
+                <div class="alert alert-danger">
+                    {{ form.phone_number.errors }}
+                </div>
+            {% endif %}
+
+            {{ form.phone_number.label }}
+            {{ form.phone_number }} -->
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Наименование</th>
+                        <th scope="col">Вес</th>
+                        <th scope="col">Сумма</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for row in order_table %}
+                    <tr>
+                        <th scope="row">{{ row.item.title }}</th>
+                        <th scope="row">{{ row.count }}</th>
+                        <th scope="row">{{ row.price }}</th>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th>{{ data }}</th>
+                    </tr>
+            </table>
+
+
+{% endblock %}

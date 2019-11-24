@@ -1,0 +1,28 @@
+{% load staticfiles %}
+
+<div class="card mb-6">
+  <div class="card-header">
+    <h5 class="card-title">{{ item.title|title }}</h5>
+      <a href="{{ item.get_edit_url }}">edit</a>
+      <a href="{{ item.get_delete_url }}">delete</a>
+  </div>
+  <div class="card-body">
+      <table>
+          <tr></tr>
+          <tr>
+              <th>
+                  <img src="{% static 'img/001.png' %}" width="400">
+              </th>
+              <th>
+                  <p class="card-text">{{ item.description }}</p>
+              </th>
+          </tr>
+
+      </table>
+      <button type="button" class="btn btn-outline-secondary" onClick="javascript:addWeight({{ item.id }}, -50, {{ item.price }})"> - </button>
+      <input id="weight-{{ item.id }}" type="number" class="btn btn-light" value="100" readonly>
+      <button type="button" class="btn btn-outline-secondary" onClick="javascript:addWeight({{ item.id }}, 50, {{ item.price }})"> +</button>
+      <input id="price-{{ item.id }}" type="text" class="btn btn-light" value="{{ item.price }} р." readonly>
+      <button type="button" class="btn btn-primary" onClick="javascript:addToCart({{ item.id }})">В корзину</button>
+  </div>
+</div>
