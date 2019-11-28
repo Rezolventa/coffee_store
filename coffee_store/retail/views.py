@@ -60,7 +60,7 @@ class ItemEdit(View):
         item = Item.objects.get(id__iexact=id)
         form = ItemForm(request.POST, instance=item)
         if form.is_valid():
-            item = form.save()
+            form.save()
             return redirect('items_list_url')
         return render(request, 'retail/item_edit_form.html', context={'form': form, 'item': item})
 

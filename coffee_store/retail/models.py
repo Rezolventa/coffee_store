@@ -7,7 +7,7 @@ class Item(models.Model):
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=150, db_index=True)
     description = models.TextField(blank=True, db_index=True)
-    price = models.IntegerField(default=0)
+    price = models.PositiveIntegerField(default=0)
 
 
     class Meta:

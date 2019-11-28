@@ -1,10 +1,10 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.db import transaction, Error
 from django.urls import reverse, resolve
 
-from .models import Item, Order, OrderRow
-from .forms import ItemForm, OrderForm
-from .views import items_list
+from retail.models import Item, Order, OrderRow
+from retail.forms import ItemForm, OrderForm
+from retail.views import items_list, add_to_cart, ItemCreate, OrderEdit
 
 
 class ModelsTestCase(TestCase):
@@ -19,7 +19,7 @@ class ModelsTestCase(TestCase):
         # test_item_neg_price
         try:
             with transaction.atomic():
-                Item.objects.create(title='Отрицательная цена', description='data', price=-25)
+                neg_item = Item.objects.create(title='Отрицательная цена', description='data', price=-25)
         except Error:
             self.test_flag = True
 
@@ -48,18 +48,76 @@ class ModelsTestCase(TestCase):
         row_list = OrderRow.objects.filter(order=test_obj)
         self.assertEqual(row_list.count(), 2)
 
-# need to be edited
-class FormsOutputTypizationTestCase(TestCase):
-    def setUp(self):
-        form = ItemForm({'title': 'Кофе', 'description': 'Произвольное описание', 'price': '1337'})
-        form.save()
 
-    def test_something(self):
-        item = Item.objects.get(title__iexact='Кофе')
+class FormsTestCase(TestCase):
+    def setUp(self):
+        form1 = ItemForm({'title': 'Кофе int', 'description': 'Произвольное описание', 'price': 137})
+        form1.save()
+
+        form2 = ItemForm({'title': 'Кофе str', 'description': 'Произвольное описание', 'price': '1337'})
+        form2.save()
+
+    def test_forms_output_typization_easy(self):
+        item = Item.objects.get(title__iexact='Кофе int')
+        self.assertIs(type(item.price), int)
+
+    def test_forms_output_typization_from_str(self):
+        item = Item.objects.get(title__iexact='Кофе str')
         self.assertIs(type(item.price), int)
 
 
-class TestUrls(TestCase):
+class UrlsTestCase(TestCase):
     def test_items_list_url(self):
         url = reverse('items_list_url')
         self.assertEqual(resolve(url).func, items_list)
+
+    def test_item_create_url(self):
+        url = reverse('item_create_url')
+        self.assertEqual(resolve(url).func.view_class, ItemCreate)
+
+    def test_add_to_cart_url(self):
+        url = reverse('add_to_cart_url')
+        self.assertEqual(resolve(url).func, add_to_cart)
+
+    def test_order_edit_url(self):
+        url = reverse('order_edit_url')
+        self.assertEqual(resolve(url).func.view_class, OrderEdit)
+
+
+class ViewTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.item_list_url = reverse('items_list_url')
+        self.item_create_url = reverse('item_create_url', )
+        self.order_edit_url = reverse('order_edit_url')
+
+        # test_order_edit_url_POST
+        item1 = Item.objects.create(title='Кофе', description='Описание товара', price=137)
+        item2 = Item.objects.create(title='Coffee', description='Descr', price=25)
+        order = Order.objects.create(phone_number='+7 31337', client_id=1, status=0)
+        OrderRow.objects.create(order=order, item=item1, count=3, price=item1.price)
+        OrderRow.objects.create(order=order, item=item2, count=4, price=22)
+        self.test_order = order
+
+    def test_item_list_url_GET(self):
+        response = self.client.get(self.item_list_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'retail/index.html')
+
+    def test_item_create_url_GET(self):
+        response = self.client.get(self.item_create_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'retail/item_create.html')
+
+    def test_item_create_url_POST(self):
+        pass
+        '''item = Item.objects.create(title='test_item_create_url_POST', price=11)
+        form = ItemForm(item)
+        response = self.client.post(self.item_create_url, {
+            'form': form,
+            'item': item
+        })
+        self.assertEqual(response.status_code, 200)'''
+
+    def test_order_edit_url_POST(self):
+        pass
