@@ -52,9 +52,7 @@
 {% endblock %}
 
 {% block content %}
-    <!--
-    <form class="" action="{% url 'add_to_cart_url' %}" method="post">
-        {% csrf_token %} -->
+
         <h1 class="mb-5">Каталог</h1>
         <p align="right"><a href="{% url 'item_create_url' %}">add</a></p>
 
@@ -62,5 +60,5 @@
             {% include 'retail/includes/item_card_template.html' %}
             <p></p>
         {% endfor %}
-    <!-- </form> -->
+
 {% endblock %}
