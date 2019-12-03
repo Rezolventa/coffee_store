@@ -28,7 +28,7 @@ cd coffee_store
 python manage.py runserver
 ```
 The default server port is 8000. The index page will be at `http://127.0.0.1:8000/`.
-# Funcionality
+# Functionality
 You can create, edit and delete coffee products, add them to a cart and confirm an order.
 # Running the tests
 To run automatic tests use `test` command. Specify the app name if tests do not start.
