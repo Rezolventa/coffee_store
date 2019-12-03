@@ -22,9 +22,16 @@ DATABASES = {
     }
 }
 ```
-To start the server you want to run `manage.py` in `coffee_store` directory with 'runserver' command:
+To start the server you want to run `manage.py` in `coffee_store` directory with `runserver` command:
 ```
 cd coffee_store
 python manage.py runserver
 ```
 The default server port is 8000. The index page will be at `http://127.0.0.1:8000/`.
+# Funcionality
+You can create, edit and delete coffee products, add them to a cart and confirm an order.
+# Running the tests
+To run automatic tests use `test` command. Specify the app name if tests do not start.
+```
+python manage.py test retail
+```
