@@ -9,15 +9,11 @@ from django.http import HttpResponse
 import json
 
 
-def items_list(request):
-    items = Item.objects.all()
-    return render(request, 'retail/index.html',  context={'items': items})
-
-
 def get_current_order():
     return Order.objects.filter(client_id=client_id, status=0).last()
 
 
+# Можно ли переделать под ItemList(View) POST?
 def add_to_cart(request):
     # ищем последний заказ в драфте по данному клиенту
     order = Order.objects.filter(client_id=client_id, status=0).last()
@@ -33,6 +29,15 @@ def add_to_cart(request):
 
     order.add_row(item, count)
     return HttpResponse(status=204)
+
+
+class ItemList(View):
+    def get(self, request):
+        items = Item.objects.all()
+        return render(request, 'retail/index.html', context={'items': items})
+
+    def post(self, request):
+        add_to_cart(request)
 
 
 class ItemCreate(View):
