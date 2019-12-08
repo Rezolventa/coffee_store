@@ -21,6 +21,12 @@ class Item(models.Model):
     def get_delete_url(self):
         return reverse('item_delete_url', kwargs={'id': self.id})
 
+    # удалить
+    def get_all(self):
+        fields = ['id', 'title', 'description', 'price']
+        table_as_list = self.objects.all()
+        return {'fields': fields, 'table': table_as_list}
+
 
     def __str__(self):
         return str(self.id)
@@ -52,6 +58,12 @@ class Order(models.Model):
     def close(self):
         self.status = 1
         self.save()
+
+    # удалить
+    def get_all(self):
+        fields = ['id', 'date', 'phone_number', 'client_id', 'status', 'item', 'count', 'price']
+        table_as_list = self.objects.all()
+        return {'fields': fields, 'table': table_as_list}
 
 
     def __str__(self):

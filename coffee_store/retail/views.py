@@ -13,6 +13,11 @@ def get_current_order():
     return Order.objects.filter(client_id=client_id, status=0).last()
 
 
+def reports(request):
+    orders = Order.objects.all()
+    return render(request, 'retail/report.html', context={'orders': orders})
+
+
 # Можно ли переделать под ItemList(View) POST?
 def add_to_cart(request):
     # ищем последний заказ в драфте по данному клиенту
