@@ -3,7 +3,7 @@ A simple coffee store app with CRUD functionality as my first Django project.
 # Getting started
 Follow these simple instructions to get a copy of a project for personal use and testing.
 ## Prerequisites
-To launch bot you have your MongoDB to be installed.
+The project uses SQL database so you want it to be installed and ready.
 ## Installing
 Clone the repository, create a new virtual environment and install all dependencies from a requirements.txt file.
 ```
@@ -16,7 +16,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'postgres',
         'USER' : 'postgres',
-        'PASSWORD' : '31337',
+        'PASSWORD' : '*****',
         'HOST' : '127.0.0.1',
         'PORT' : '5432',
     }
