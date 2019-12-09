@@ -4,7 +4,7 @@ from django.urls import reverse, resolve
 
 from retail.models import Item, Order, OrderRow
 from retail.forms import ItemForm, OrderForm
-from retail.views import items_list, add_to_cart, ItemCreate, OrderEdit
+from retail.views import add_to_cart, ItemList, ItemCreate, OrderEdit
 
 
 class ModelsTestCase(TestCase):
@@ -69,7 +69,7 @@ class FormsTestCase(TestCase):
 class UrlsTestCase(TestCase):
     def test_items_list_url(self):
         url = reverse('items_list_url')
-        self.assertEqual(resolve(url).func, items_list)
+        self.assertEqual(resolve(url).func.view_class, ItemList)
 
     def test_item_create_url(self):
         url = reverse('item_create_url')
