@@ -13,12 +13,6 @@ def get_current_order():
     return Order.objects.filter(client_id=client_id, status=0).last()
 
 
-def reports(request):
-    orders = Order.objects.all()
-    return render(request, 'retail/report.html', context={'orders': orders})
-
-
-# Можно ли переделать под ItemList(View) POST?
 def add_to_cart(request):
     # ищем последний заказ в драфте по данному клиенту
     order = Order.objects.filter(client_id=client_id, status=0).last()
@@ -36,10 +30,26 @@ def add_to_cart(request):
     return HttpResponse(status=204)
 
 
+class Reports(View):
+    def get(self, request, id = None):
+        if id:
+            orders = Order.objects.all()
+            current_order = Order.objects.get(id__iexact=id)
+            order_table = OrderRow.objects.filter(order=current_order)
+        # документ по умолчанию
+        else:
+            orders = Order.objects.all()
+            current_order = orders.first()
+            order_table = OrderRow.objects.filter(order=current_order)
+        return render(request, 'retail/report.html',
+                      context={'current_order': current_order, 'orders': orders, 'order_table': order_table})
+
+
 class ItemList(View):
     def get(self, request):
         items = Item.objects.all()
         return render(request, 'retail/index.html', context={'items': items})
+
 
     def post(self, request):
         add_to_cart(request)
@@ -115,7 +125,3 @@ class OrderEdit(View):
 
 # константа, заменяющие id клиента и текущий заказ
 client_id = '1'
-
-# очистка заказов
-utils.clear_obj(Order)
-utils.clear_obj(OrderRow)

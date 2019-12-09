@@ -9,7 +9,8 @@ urlpatterns = [
     path('items/create/', views.ItemCreate.as_view(), name='item_create_url'),
     path('order/', views.OrderEdit.as_view(), name='order_edit_url'),
     path('addtocart/', views.add_to_cart, name='add_to_cart_url'),
-    path('reports/', views.reports, name='reports_url'),
+    path('reports/', views.Reports.as_view(), name='reports_url'),
+    path('reports/order/<str:id>/', views.Reports.as_view(), name='reports_order_url'),
     path('items/<str:id>/', views.ItemEdit.as_view(), name='item_edit_url'),
     path('items/<str:id>/delete', views.ItemDelete.as_view(), name='item_delete_url')
 ]
