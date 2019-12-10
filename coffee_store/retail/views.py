@@ -12,7 +12,7 @@ import json
 def get_current_order():
     return Order.objects.filter(client_id=client_id, status=0).last()
 
-
+#
 def add_to_cart(request):
     # ищем последний заказ в драфте по данному клиенту
     order = Order.objects.filter(client_id=client_id, status=0).last()

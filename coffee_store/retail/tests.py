@@ -87,37 +87,44 @@ class UrlsTestCase(TestCase):
 class ViewTestCase(TestCase):
     def setUp(self):
         self.client = Client()
-        self.item_list_url = reverse('items_list_url')
-        self.item_create_url = reverse('item_create_url', )
-        self.order_edit_url = reverse('order_edit_url')
 
         # test_order_edit_url_POST
         item1 = Item.objects.create(title='Кофе', description='Описание товара', price=137)
         item2 = Item.objects.create(title='Coffee', description='Descr', price=25)
-        order = Order.objects.create(phone_number='+7 31337', client_id=1, status=0)
+        order = Order.objects.create(phone_number='+7 31337000', client_id=1, status=0)
         OrderRow.objects.create(order=order, item=item1, count=3, price=item1.price)
         OrderRow.objects.create(order=order, item=item2, count=4, price=22)
         self.test_order = order
 
+    # ItemList
     def test_item_list_url_GET(self):
-        response = self.client.get(self.item_list_url)
+        response = self.client.get(reverse('items_list_url'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'retail/index.html')
 
+    # ItemCreate(GET)
     def test_item_create_url_GET(self):
-        response = self.client.get(self.item_create_url)
+        response = self.client.get(reverse('item_create_url'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'retail/item_create.html')
 
+    # ItemCreate(POST)
     def test_item_create_url_POST(self):
-        pass
-        '''item = Item.objects.create(title='test_item_create_url_POST', price=11)
-        form = ItemForm(item)
-        response = self.client.post(self.item_create_url, {
-            'form': form,
-            'item': item
-        })
-        self.assertEqual(response.status_code, 200)'''
+        form = {'title': 'test_item_create_url_POST', 'description': 'descr', 'price': 25}
+        response = self.client.post(reverse('item_create_url'), form)
+        self.assertEqual(response.status_code, 302)
+        self.assertIs(type(Item.objects.get(title='test_item_create_url_POST')), Item)
 
+    # OrderEdit(GET)
+    def test_order_edit_url_GET(self):
+        response = self.client.get(reverse('order_edit_url'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'retail/cart.html')
+
+    # OrderEdit(POST)
     def test_order_edit_url_POST(self):
-        pass
+        form = {'phone_number': self.test_order.phone_number}
+        response = self.client.post(reverse('order_edit_url'), form, instance=self.test_order)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'retail/order_closing_form.html')
+        self.assertEqual(self.test_order.status, 0) # почему 0, должно быть 1?
