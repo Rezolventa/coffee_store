@@ -12,7 +12,7 @@ import json
 def get_current_order():
     return Order.objects.filter(client_id=client_id, status=0).last()
 
-#
+
 def add_to_cart(request):
     # ищем последний заказ в драфте по данному клиенту
     order = Order.objects.filter(client_id=client_id, status=0).last()
@@ -50,7 +50,6 @@ class ItemList(View):
         items = Item.objects.all()
         return render(request, 'retail/index.html', context={'items': items})
 
-
     def post(self, request):
         add_to_cart(request)
 
@@ -59,7 +58,6 @@ class ItemCreate(View):
     def get(self, request):
         form = ItemForm()
         return render(request, 'retail/item_create.html', context={'form': form})
-
 
     def post(self, request):
         form = ItemForm(request.POST)
@@ -75,7 +73,6 @@ class ItemEdit(View):
         form = ItemForm(instance=item)
         return render(request, 'retail/item_edit_form.html', context={'form': form, 'item': item})
 
-
     def post(self, request, id):
         item = Item.objects.get(id__iexact=id)
         form = ItemForm(request.POST, instance=item)
@@ -90,7 +87,6 @@ class ItemDelete(View):
         item = Item.objects.get(id__iexact=id)
         form = ItemForm(instance=item)
         return render(request, 'retail/item_delete_form.html', context={'form': form, 'item': item})
-
 
     def post(self, request, id):
         item = Item.objects.get(id__iexact=id)

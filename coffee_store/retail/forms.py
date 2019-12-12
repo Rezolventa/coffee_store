@@ -1,6 +1,7 @@
 from django import forms
 from .models import Item, Order
 
+
 class ItemForm(forms.ModelForm):
     class Meta:
         model = Item
@@ -11,6 +12,7 @@ class ItemForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'class': 'form-control'}),
             'price': forms.NumberInput(attrs={'class': 'form-control'})
         }
+
 
 # в ордере пользователь ничего особо вводить не будет - кроме своего номера телефона
 class OrderForm(forms.ModelForm):

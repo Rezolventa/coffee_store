@@ -9,18 +9,14 @@ class Item(models.Model):
     description = models.TextField(blank=True, db_index=True)
     price = models.PositiveIntegerField(default=0)
 
-
     class Meta:
         ordering = ['title']
-
 
     def get_edit_url(self):
         return reverse('item_edit_url', kwargs={'id': self.id})
 
-
     def get_delete_url(self):
         return reverse('item_delete_url', kwargs={'id': self.id})
-
 
     def __str__(self):
         return str(self.id)
@@ -33,7 +29,6 @@ class Order(models.Model):
     client_id = models.CharField(max_length=10, db_index=True)
     status = models.IntegerField() # 0 - draft, 1 - negotiating, 2 - closed
 
-
     def add_row(self, item, count):
         row = OrderRow.objects.filter(order=self, item=item).first()
         if row:
@@ -44,19 +39,15 @@ class Order(models.Model):
             row = OrderRow(order=self, item=item, count=count, price=price)
         row.save()
 
-
     def get_view_url(self):
         return reverse('reports_order_url', kwargs={'id': self.id})
-
 
     def get_full_amount(self):
         return OrderRow.objects.filter(order=self).aggregate(Sum('price')).get('price__sum')
 
-
     def close(self):
         self.status = 1
         self.save()
-
 
     def __str__(self):
         return str(self.id)
@@ -67,7 +58,6 @@ class OrderRow(models.Model):
     item = models.ForeignKey('Item', on_delete=models.CASCADE)
     count = models.IntegerField(default=0)
     price = models.IntegerField(default=0)
-
 
     def __str__(self):
         return 'order: {}, item: {}, count: {}, price: {}'.format(self.order, self.item, self.count, self.price)
